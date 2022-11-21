@@ -18,6 +18,7 @@ classifiers = [
 
 [tool.poetry.dependencies]
 python = "^3.7"
+pycryptodome = "^3.15.0"
 
 
 [tool.poetry.group.test.dependencies]
