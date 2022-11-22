@@ -1,5 +1,6 @@
 from sonofflan.config import DeviceConfig
 from sonofflan.devices.device import Device
+from sonofflan.devices.plug import Plug
 
 
 def create_device(data: dict, config: DeviceConfig) -> Device:
@@ -13,4 +14,6 @@ def create_device(data: dict, config: DeviceConfig) -> Device:
         Configuration for the device
     """
 
+    if data['type'] == "plug":
+        return Plug(data, config)
     return Device(data, config)
