@@ -19,10 +19,13 @@ classifiers = [
 [tool.poetry.dependencies]
 python = "^3.7"
 pycryptodome = "^3.15.0"
+requests = "^2.28.1"
 
 
 [tool.poetry.group.test.dependencies]
 pytest = "^7.2.0"
+pytest-asyncio = "^0.20.2"
+requests-mock = "^1.10.0"
 
 [build-system]
 requires = ["poetry-core"]
