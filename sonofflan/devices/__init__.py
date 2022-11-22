@@ -2,6 +2,7 @@ from sonofflan.config import DeviceConfig
 from sonofflan.devices.device import Device
 from sonofflan.devices.plug import Plug
 from sonofflan.devices.strip import Strip
+from sonofflan.devices.powerplug import PowerPlug
 
 
 def create_device(data: dict, config: DeviceConfig) -> Device:
@@ -19,4 +20,6 @@ def create_device(data: dict, config: DeviceConfig) -> Device:
         return Plug(data, config)
     if data['type'] == "strip":
         return Strip(data, config)
+    if data['type'] == "enhanced_plug":
+        return PowerPlug(data, config)
     return Device(data, config)
