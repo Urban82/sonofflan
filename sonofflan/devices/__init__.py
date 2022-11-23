@@ -3,6 +3,7 @@ from sonofflan.devices.device import Device
 from sonofflan.devices.plug import Plug
 from sonofflan.devices.strip import Strip
 from sonofflan.devices.powerplug import PowerPlug
+from sonofflan.devices.thermoplug import ThermoPlug
 
 
 def create_device(data: dict, config: DeviceConfig) -> Device:
@@ -22,4 +23,6 @@ def create_device(data: dict, config: DeviceConfig) -> Device:
         return Strip(data, config)
     if data['type'] == "enhanced_plug":
         return PowerPlug(data, config)
+    if data['type'] == "th_plug":
+        return ThermoPlug(data, config)
     return Device(data, config)
