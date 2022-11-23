@@ -16,7 +16,6 @@ class DeviceConfig:
         Encryption key for the device (used only if the device is encrypted).
     """
 
-    _id = None
     _name = None
     _key = None
 
@@ -32,7 +31,7 @@ class DeviceConfig:
             raise TypeError(f"Invalid parameter \"{c}\" ({type(c).__name__}): expected a dictionary")
         if "id" not in c:
             raise ValueError(f"Missing required ID in {c}")
-        self._id = c["id"]
+        self._id = str(c["id"])
         if "name" in c:
             self._name = c["name"]
         if "key" in c and c["key"] != "":
