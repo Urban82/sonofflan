@@ -93,3 +93,6 @@ def test_update():
     assert dev.last_update > after  # type: ignore
     assert dev.last_update < after_update  # type: ignore
     assert dev.status == False
+    assert dev.voltage == 225.10
+    assert dev.current == 2.10
+    assert dev.power == 427.71
