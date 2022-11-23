@@ -52,7 +52,7 @@ class Device:
         self._name = config.name
         self._encrypt = data['encrypt']
         self._key = config.key
-        self._logger = logging.getLogger(f"sonoff.devices.{self.__class__.__name__}")
+        self._logger = logging.getLogger(f"sonofflan.devices.{self.__class__.__name__}")
 
         self._update(data)
 
