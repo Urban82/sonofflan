@@ -11,8 +11,6 @@ class Strip(Device):
         Available outlets
     """
 
-    _statuses = {}
-
     def __init__(self, data: dict, config: DeviceConfig) -> None:
         """
         Parameters
@@ -23,6 +21,7 @@ class Strip(Device):
             Configuration for the device
         """
 
+        self._statuses = {}
         super().__init__(data, config)
 
     def _update(self, data: dict) -> None:

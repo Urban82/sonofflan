@@ -30,14 +30,6 @@ class Device:
         The date and time which the device was updated for the last time
     """
 
-    _id = None
-    _name = None
-    _encrypt = False
-    _key = None
-
-    _url = None
-    _last_update = None
-
     def __init__(self, data: dict, config: DeviceConfig) -> None:
         """
         Parameters
@@ -52,6 +44,8 @@ class Device:
         self._name = config.name
         self._encrypt = data['encrypt']
         self._key = config.key
+        self._url = None
+        self._last_update = None
         self._logger = logging.getLogger(f"sonofflan.devices.{self.__class__.__name__}")
 
         self._update(data)

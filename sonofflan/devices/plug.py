@@ -11,8 +11,6 @@ class Plug(Device):
         The status of the plug
     """
 
-    _status = None
-
     def __init__(self, data: dict, config: DeviceConfig) -> None:
         """
         Parameters
@@ -23,6 +21,7 @@ class Plug(Device):
             Configuration for the device
         """
 
+        self._status = None
         super().__init__(data, config)
 
     def _update(self, data: dict) -> None:

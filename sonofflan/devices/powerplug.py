@@ -14,10 +14,6 @@ class PowerPlug(Plug):
         The measured power
     """
 
-    _voltage = None
-    _current = None
-    _power = None
-
     def __init__(self, data: dict, config: DeviceConfig) -> None:
         """
         Parameters
@@ -28,6 +24,9 @@ class PowerPlug(Plug):
             Configuration for the device
         """
 
+        self._voltage = None
+        self._current = None
+        self._power = None
         super().__init__(data, config)
 
     def _update(self, data: dict) -> None:

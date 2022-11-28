@@ -14,10 +14,6 @@ class ThermoPlug(Plug):
         The measured humidity
     """
 
-    _sensor = None
-    _temperature = None
-    _humidity = None
-
     def __init__(self, data: dict, config: DeviceConfig) -> None:
         """
         Parameters
@@ -28,6 +24,9 @@ class ThermoPlug(Plug):
             Configuration for the device
         """
 
+        self._sensor = None
+        self._temperature = None
+        self._humidity = None
         super().__init__(data, config)
 
     def _update(self, data: dict) -> None:

@@ -16,9 +16,6 @@ class DeviceConfig:
         Encryption key for the device (used only if the device is encrypted).
     """
 
-    _name = None
-    _key = None
-
     def __init__(self, c: dict) -> None:
         """
         Parameters
@@ -32,6 +29,8 @@ class DeviceConfig:
         if "id" not in c:
             raise ValueError(f"Missing required ID in {c}")
         self._id = str(c["id"])
+        self._name = None
+        self._key = None
         if "name" in c:
             self._name = c["name"]
         if "key" in c and c["key"] != "":
@@ -84,8 +83,6 @@ class DevicesConfig:
         }
     """
 
-    _devices = {}
-
     def __init__(self, c: dict|list|None = None) -> None:
         """
         Parameters
@@ -94,6 +91,7 @@ class DevicesConfig:
             Dictionary or list with the configuration (optional)
         """
 
+        self._devices = {}
         if c is None:
             return # Nothing to configure
         if isinstance(c, dict):
