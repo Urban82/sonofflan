@@ -1,7 +1,7 @@
 class DeviceConfig:
     """Hold device configuration.
 
-    Configurations is loaded by dictionary.
+    Configuration is loaded by dictionary.
     ID is the only required field. Name is used for display and ID will
     be used if not set.
     Key is required only for encrypted devices (not DIY mode).
@@ -52,7 +52,7 @@ class DeviceConfig:
         return self._name if self._name is not None else f"[{self._id}]"
 
     @property
-    def key(self) -> str|None:
+    def key(self) -> str | None:
         """The device encryption key (or None if not set)"""
 
         return self._key
@@ -86,7 +86,7 @@ class DevicesConfig:
         }
     """
 
-    def __init__(self, c: dict|list|None = None) -> None:
+    def __init__(self, c: dict | list | None = None) -> None:
         """
         Parameters
         ----------
@@ -96,12 +96,12 @@ class DevicesConfig:
 
         self._devices = {}
         if c is None:
-            return # Nothing to configure
+            return  # Nothing to configure
         if isinstance(c, dict):
             # Configure from dictionary: ID is in the key
-            for id in c:
-                c[id]["id"] = id # In that case field "id" is replaced with the key
-                self._devices[id] = DeviceConfig(c[id])
+            for device_id in c:
+                c[device_id]["id"] = device_id  # In that case field "id" is replaced with the key
+                self._devices[device_id] = DeviceConfig(c[device_id])
         elif isinstance(c, list):
             # Configure from list: ID is in the item
             for it in c:
@@ -118,15 +118,15 @@ class DevicesConfig:
 
         return len(self._devices)
 
-    def device(self, id: str) -> DeviceConfig|None:
+    def device(self, device_id: str) -> DeviceConfig | None:
         """Get the configuration for the device with the specified ID
 
         Parameters
         ----------
-        `id` : str
+        `device_id` : str
             The ID for the device to retrieve
         """
 
-        if id in self._devices:
-            return self._devices[id]
+        if device_id in self._devices:
+            return self._devices[device_id]
         return None

@@ -31,12 +31,13 @@ class AsyncZeroconfMock(AsyncMock):
     def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
 
+    # noinspection PyMethodMayBeStatic
     async def async_get_service_info(self, service_type: str, name: str) -> ServiceInfo:
         assert name.endswith("." + service_type)
-        id = name[:-(len(service_type) + 1)]
-        if id.startswith("eWeLink_"):
-            id = id[8:]
-        if id == "1234":
+        device_id = name[:-(len(service_type) + 1)]
+        if device_id.startswith("eWeLink_"):
+            device_id = device_id[8:]
+        if device_id == "1234":
             data = {
                 "switch": "on",
             }
@@ -45,7 +46,7 @@ class AsyncZeroconfMock(AsyncMock):
                 b"type": b"plug",
                 b"data1": json.dumps(data).encode("utf8"),
             }
-        elif id == "5678":
+        elif device_id == "5678":
             iv = generate_iv()
             data = {
                 "switch": "on",
@@ -91,12 +92,14 @@ async def test_shutdown(class_mocker):
     assert browser._browser.async_cancel_called == 1
     assert len(browser.devices) == 0
 
+
 @pytest.mark.asyncio
 async def test_add(class_mocker):
     class_mocker.patch('sonofflan.browser.AsyncZeroconf', new=AsyncZeroconfMock)
     class_mocker.patch('sonofflan.browser.AsyncServiceBrowser', new=AsyncServiceBrowserMock)
 
     browser = Browser(config)
+    # noinspection PyTypeChecker
     browser._update(
         zeroconf=None,
         service_type="_ewelink._tcp.local.",
@@ -112,8 +115,9 @@ async def test_add(class_mocker):
     assert "1234" in browser.devices
     assert browser.devices["1234"].name == "Device 1"
     assert browser.devices["1234"].url == "http://1.2.3.4:8181"
-    assert browser.devices["1234"].encrypt == False
-    assert browser.devices["1234"].status == True
+    assert browser.devices["1234"].encrypt is False
+    assert browser.devices["1234"].status is True
+
 
 @pytest.mark.asyncio
 async def test_add_two(class_mocker):
@@ -121,12 +125,14 @@ async def test_add_two(class_mocker):
     class_mocker.patch('sonofflan.browser.AsyncServiceBrowser', new=AsyncServiceBrowserMock)
 
     browser = Browser(config)
+    # noinspection PyTypeChecker
     browser._update(
         zeroconf=None,
         service_type="_ewelink._tcp.local.",
         name="eWeLink_1234._ewelink._tcp.local.",
         state_change=ServiceStateChange.Added
     )
+    # noinspection PyTypeChecker
     browser._update(
         zeroconf=None,
         service_type="_ewelink._tcp.local.",
@@ -142,14 +148,14 @@ async def test_add_two(class_mocker):
     assert "1234" in browser.devices
     assert browser.devices["1234"].name == "Device 1"
     assert browser.devices["1234"].url == "http://1.2.3.4:8181"
-    assert browser.devices["1234"].encrypt == False
-    assert browser.devices["1234"].status == True
+    assert browser.devices["1234"].encrypt is False
+    assert browser.devices["1234"].status is True
 
     assert "5678" in browser.devices
     assert browser.devices["5678"].name == "Device 2"
     assert browser.devices["5678"].url == "http://1.2.3.4:8181"
-    assert browser.devices["5678"].encrypt == True
-    assert browser.devices["5678"].status == True
+    assert browser.devices["5678"].encrypt is True
+    assert browser.devices["5678"].status is True
     assert browser.devices["5678"].voltage == 220.00
     assert browser.devices["5678"].current == 5.00
     assert browser.devices["5678"].power == 1100.00

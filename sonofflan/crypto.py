@@ -24,9 +24,9 @@ def decrypt(data_element: str, iv: str, device_key: str) -> bytes:
     """
 
     dk = bytes(device_key, "utf-8")
-    hash = MD5.new()
-    hash.update(dk)
-    key = hash.digest()
+    md5hash = MD5.new()
+    md5hash.update(dk)
+    key = md5hash.digest()
 
     cipher = AES.new(key, AES.MODE_CBC, iv=b64decode(iv))
     ciphertext = b64decode(data_element)
@@ -54,9 +54,9 @@ def encrypt(data_element: str, iv: str, device_key: str) -> str:
     """
 
     dk = bytes(device_key, "utf-8")
-    hash = MD5.new()
-    hash.update(dk)
-    key = hash.digest()
+    md5hash = MD5.new()
+    md5hash.update(dk)
+    key = md5hash.digest()
 
     cipher = AES.new(key, AES.MODE_CBC, iv=b64decode(iv))
     padded = pad(bytes(data_element, "utf-8"), AES.block_size)

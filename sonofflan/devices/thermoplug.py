@@ -1,6 +1,7 @@
 from sonofflan.config import DeviceConfig
 from sonofflan.devices.plug import Plug
 
+
 class ThermoPlug(Plug):
     """Sonoff plug with thermometer
 
@@ -49,16 +50,16 @@ class ThermoPlug(Plug):
         return super()._repr() + f" sensor:{self._sensor} T:{self._temperature}° H:{self._humidity}%"
 
     @property
-    def sensor(self) -> float|None:
+    def sensor(self) -> float | None:
         """The reported sensor type"""
         return self._sensor
 
     @property
-    def temperature(self) -> float|None:
+    def temperature(self) -> float | None:
         """The measured temperature"""
         return self._temperature
 
     @property
-    def humidity(self) -> float|None:
+    def humidity(self) -> float | None:
         """The measured humidity"""
         return self._humidity

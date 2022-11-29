@@ -42,7 +42,7 @@ class Plug(Device):
         return super()._repr() + f" status:{self._status}"
 
     @property
-    def status(self) -> bool|None:
+    def status(self) -> bool | None:
         """The status of the plug (on or off)"""
 
         return self._status

@@ -6,11 +6,14 @@ from sonofflan.config import DeviceConfig, DevicesConfig
 # Tests for DeviceConfig
 def test_deviceconfig_invalid():
     with pytest.raises(TypeError):
+        # noinspection PyTypeChecker
         DeviceConfig("")
+
 
 def test_deviceconfig_empty():
     with pytest.raises(ValueError):
         DeviceConfig({})
+
 
 def test_deviceconfig_only_id():
     dc = DeviceConfig({"id": "1234"})
@@ -18,11 +21,13 @@ def test_deviceconfig_only_id():
     assert dc.name == "[1234]"
     assert dc.key is None
 
+
 def test_deviceconfig_with_name():
     dc = DeviceConfig({"id": "1234", "name": "ABCD"})
     assert dc.id == "1234"
     assert dc.name == "ABCD"
     assert dc.key is None
+
 
 def test_deviceconfig_with_key():
     dc = DeviceConfig({"id": "1234", "name": "ABCD", "key": "!£$%"})
@@ -34,7 +39,9 @@ def test_deviceconfig_with_key():
 # Tests for DevicesConfig
 def test_devicesconfig_invalid():
     with pytest.raises(TypeError):
+        # noinspection PyTypeChecker
         DevicesConfig("")
+
 
 def test_devicesconfig_none():
     dc = DevicesConfig()
@@ -43,12 +50,13 @@ def test_devicesconfig_none():
     assert dc.device("5678") is None
     assert dc.device("ABCD") is None
 
+
 def test_devicesconfig_dict():
     dc = DevicesConfig({
         "1234": {
             "name": "Device 1"
         },
-        "5678" : {
+        "5678": {
             "name": "Device 2"
         }
     })
@@ -67,6 +75,7 @@ def test_devicesconfig_dict():
     assert dev2.key is None
 
     assert dc.device("ABCD") is None
+
 
 def test_devicesconfig_list():
     dc = DevicesConfig([

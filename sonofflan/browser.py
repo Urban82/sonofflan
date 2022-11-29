@@ -1,12 +1,11 @@
 import asyncio
 import json
 import logging
-from typing import Callable
 
 from zeroconf import ServiceStateChange, Zeroconf
 from zeroconf.asyncio import AsyncServiceBrowser, AsyncZeroconf
 
-from sonofflan.config import DeviceConfig, DevicesConfig
+from sonofflan.config import DevicesConfig
 from sonofflan.crypto import decrypt
 from sonofflan.devices import create_device, Device
 from sonofflan.errors import (
@@ -21,7 +20,7 @@ SERVICE_TYPE = "_ewelink._tcp.local."
 DEVICE_PREFIX = "eWeLink_"
 
 
-class Browser():
+class Browser:
     """Zeroconf browser for Sonoff devices
 
     Attributes
@@ -59,11 +58,13 @@ class Browser():
 
         return self._devices
 
+    # noinspection PyUnusedLocal
     def _update(self, zeroconf: Zeroconf, service_type: str, name: str, state_change: ServiceStateChange) -> None:
         asyncio.get_running_loop().create_task(
             self._async_update(service_type, name, state_change)
         )
 
+    # noinspection PyBroadException
     async def _async_update(self, service_type: str, name: str, state_change: ServiceStateChange):
         try:
             self._logger.debug(f'Service:"{name}" Action:{state_change.name}')
@@ -78,10 +79,10 @@ class Browser():
             if config is None:
                 raise NotConfiguredDeviceError(device_id, device_type)
             self._logger.debug(f"Got config {config}")
-            extra = b"".join(map(lambda x : info.properties.get(x) or b"", [b"data1", b"data2", b"data3", b"data4"]))
+            extra = b"".join(map(lambda x: info.properties.get(x) or b"", [b"data1", b"data2", b"data3", b"data4"]))
             encrypt = (info.properties.get(b"encrypt") == b"true")
             if encrypt:
-                if config.key == None:
+                if config.key is None:
                     raise MissingDeviceKeyError(device_id, device_type)
                 iv = info.properties.get(b"iv").decode("utf8")
                 extra = decrypt(extra.decode("utf8"), iv, config.key)
@@ -104,10 +105,13 @@ class Browser():
                 pass
             self._logger.info(f"{state_change.name} {device}")
         except InvalidDeviceError as ex:
-            self._logger.warn(f'{ex}, ignoring it')
+            self._logger.warning(f'{ex}, ignoring it')
         except NoInfoError as ex:
-            self._logger.warn(f'{ex}, ignoring it')
+            self._logger.warning(f'{ex}, ignoring it')
         except NotConfiguredDeviceError as ex:
             self._logger.debug(f'{ex}, ignoring it')
         except Exception:
-            self._logger.error(f'Exception while processing {state_change.name} for "{name}" [{service_type}], ignoring it', exc_info=True)
+            self._logger.error(
+                f'Exception while processing {state_change.name} for "{name}" [{service_type}], ignoring it',
+                exc_info=True
+            )

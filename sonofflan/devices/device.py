@@ -88,7 +88,7 @@ class Device:
 
         return f'{self.__class__.__name__}({self._repr()} updated={self._last_update})'
 
-    def _send(self, url: str, data: str|dict) -> None:
+    def _send(self, url: str, data: str | dict) -> None:
         """Internal send command method
 
         Parameters
@@ -103,7 +103,7 @@ class Device:
             self._async_send(url, data)
         )
 
-    async def _async_send(self, url: str, data: str|dict) -> None:
+    async def _async_send(self, url: str, data: str | dict) -> None:
         """Internal asynchronous send command method
 
         Parameters
@@ -146,6 +146,7 @@ class Device:
         )
         payload = json.dumps(payload, separators=(",", ":"), indent=None)
         response = requests.post(f"{self._url}{url}", headers=headers, data=payload)
+        # noinspection PyBroadException
         try:
             if response.status_code != 200:
                 raise RuntimeError(f"Got HTTP status {response.code}")  # type: ignore
@@ -154,7 +155,7 @@ class Device:
             if "error" in response_json and response_json["error"] != 0:
                 raise RuntimeError(f'Get error {response_json["error"]}')
             self._logger.debug(f'Message sent to {self} successfully!')
-        except Exception as ex:
+        except Exception:
             self._logger.error(f"Error processing response {response}: {response.content}", exc_info=True)
 
     @property
@@ -176,19 +177,19 @@ class Device:
         return self._encrypt
 
     @property
-    def key(self) -> str|None:
+    def key(self) -> str | None:
         """The device encryption key"""
 
         return self._key
 
     @property
-    def url(self) -> str|None:
+    def url(self) -> str | None:
         """The device base URL (used to send commands)"""
 
         return self._url
 
     @property
-    def last_update(self) -> datetime|None:
+    def last_update(self) -> datetime | None:
         """The date and time which the device was updated for the last time"""
 
         return self._last_update

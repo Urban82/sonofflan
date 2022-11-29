@@ -1,6 +1,7 @@
 from sonofflan.config import DeviceConfig
 from sonofflan.devices.plug import Plug
 
+
 class PowerPlug(Plug):
     """Sonoff plug with power meter
 
@@ -49,16 +50,16 @@ class PowerPlug(Plug):
         return super()._repr() + f" V:{self._voltage}V C:{self._current}A P:{self._power}W"
 
     @property
-    def voltage(self) -> float|None:
+    def voltage(self) -> float | None:
         """The measured voltage"""
         return self._voltage
 
     @property
-    def current(self) -> float|None:
+    def current(self) -> float | None:
         """The measured current"""
         return self._current
 
     @property
-    def power(self) -> float|None:
+    def power(self) -> float | None:
         """The measured power"""
         return self._power
