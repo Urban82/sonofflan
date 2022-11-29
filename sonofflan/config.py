@@ -36,6 +36,9 @@ class DeviceConfig:
         if "key" in c and c["key"] != "":
             self._key = c["key"]
 
+    def __repr__(self) -> str:
+        return f"DeviceConfig(\"{self._name}\" id:{self._id} key:{self._key})"
+
     @property
     def id(self) -> str:
         """The device ID"""
@@ -106,6 +109,9 @@ class DevicesConfig:
                 self._devices[dc.id] = dc
         else:
             raise TypeError(f"Invalid parameter \"{c}\" ({type(c).__name__}): expected a dictionary or a list")
+
+    def __repr__(self) -> str:
+        return f"DevicesConfig({self._devices})"
 
     def num_devices(self) -> int:
         """Get the number of configured devices"""
