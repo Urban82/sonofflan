@@ -23,15 +23,13 @@ def decrypt(data_element: str, iv: str, device_key: str) -> bytes:
     The decrypted data
     """
 
-    device_key = bytes(device_key, "utf-8")
-    encoded = data_element
-
+    dk = bytes(device_key, "utf-8")
     hash = MD5.new()
-    hash.update(device_key)
+    hash.update(dk)
     key = hash.digest()
 
     cipher = AES.new(key, AES.MODE_CBC, iv=b64decode(iv))
-    ciphertext = b64decode(encoded)
+    ciphertext = b64decode(data_element)
     padded = cipher.decrypt(ciphertext)
     plaintext = unpad(padded, AES.block_size)
 
@@ -55,15 +53,13 @@ def encrypt(data_element: str, iv: str, device_key: str) -> str:
     The encrypted data
     """
 
-    device_key = bytes(device_key, "utf-8")
-    plaintext = bytes(data_element, "utf-8")
-
+    dk = bytes(device_key, "utf-8")
     hash = MD5.new()
-    hash.update(device_key)
+    hash.update(dk)
     key = hash.digest()
 
     cipher = AES.new(key, AES.MODE_CBC, iv=b64decode(iv))
-    padded = pad(plaintext, AES.block_size)
+    padded = pad(bytes(data_element, "utf-8"), AES.block_size)
     ciphertext = cipher.encrypt(padded)
     encoded = b64encode(ciphertext)
 
