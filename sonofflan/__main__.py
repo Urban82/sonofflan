@@ -80,10 +80,12 @@ if __name__ == "__main__":
         description="Simple utility to interact with Sonoff devices through LAN protocol"
     )
     parser.add_argument("action", choices=["discover", "info"], default="discover", nargs='?')
+    logparser = parser.add_mutually_exclusive_group(required=False)
+    logparser.add_argument("-v", "--verbose", help="Verbose", action="store_true", default=False)
+    logparser.add_argument("-q", "--quiet", help="Quiet", action="store_true", default=False)
     parser.add_argument("-d", "--device", help="Device ID")
     parser.add_argument("-k", "--key", help="Device encryption key")
     parser.add_argument("-c", "--config", help="Device configuration", type=argparse.FileType("r"))
-    parser.add_argument("-v", "--verbose", help="Verbose", action="store_true", default=False)
     args = parser.parse_args()
     if args.action == "info":
         if args.device is None:
@@ -102,6 +104,8 @@ if __name__ == "__main__":
 
     if args.verbose:
         root_logger.setLevel(logging.DEBUG)
+    if args.quiet:
+        root_logger.setLevel(logging.WARNING)
 
     # noinspection PyBroadException
     try:
