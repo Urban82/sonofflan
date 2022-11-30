@@ -36,7 +36,7 @@ def info(devices: dict[str, Device], device_id: str) -> None:
     print(f"  Type:        {type(device).__name__}")
     if isinstance(device, Plug):
         print(f"  Status:      {'on' if device.status else 'off'}")
-    if isinstance(device, Strip):
+    elif isinstance(device, Strip):
         s = ""
         for outlet in device.outlets:
             s += f" {outlet}:{'on' if device.status(outlet) else 'off'}"
@@ -52,6 +52,7 @@ def info(devices: dict[str, Device], device_id: str) -> None:
 
 
 async def main() -> None:
+    browser = None
     # noinspection PyBroadException
     try:
         logger.info("Creating Sonoff Zeroconfig browser...")
@@ -68,7 +69,8 @@ async def main() -> None:
         logger.error("Exception", exc_info=True)
     finally:
         logger.info("Shutting down...")
-        await browser.shutdown()
+        if browser:
+            await browser.shutdown()
         logger.info("Completed")
 
 
