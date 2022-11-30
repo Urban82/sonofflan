@@ -22,8 +22,8 @@ logger = logging.getLogger("sonofflan")
 def discover(devices: dict[str, Device]) -> None:
     print(f"Found {len(devices)} devices:")
     for device_id in devices:
-        devices = devices[device_id]
-        print(f" - {devices.name} [{devices.id}]")
+        device = devices[device_id]
+        print(f" - {device.name} [{device.id}] {type(device).__name__}")
 
 
 def info(devices: dict[str, Device], device_id: str) -> None:
