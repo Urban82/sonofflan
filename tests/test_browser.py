@@ -10,6 +10,7 @@ from zeroconf import ServiceInfo, ServiceStateChange
 from sonofflan.browser import Browser
 from sonofflan.config import DevicesConfig
 from sonofflan.crypto import encrypt, generate_iv
+from sonofflan.devices import Plug, PowerPlug
 
 dev2key = "abcdefgh-ijkl-mnop-qrst-uvwxyz012345"
 config = DevicesConfig([
@@ -113,10 +114,12 @@ async def test_add(class_mocker):
     assert len(browser.devices) == 1
 
     assert "1234" in browser.devices
-    assert browser.devices["1234"].name == "Device 1"
-    assert browser.devices["1234"].url == "http://1.2.3.4:8181"
-    assert browser.devices["1234"].encrypt is False
-    assert browser.devices["1234"].status is True
+    dev = browser.devices["1234"]
+    assert dev.name == "Device 1"
+    assert dev.url == "http://1.2.3.4:8181"
+    assert dev.encrypt is False
+    assert isinstance(dev, Plug)
+    assert dev.status is True
 
 
 @pytest.mark.asyncio
@@ -146,16 +149,20 @@ async def test_add_two(class_mocker):
     assert len(browser.devices) == 2
 
     assert "1234" in browser.devices
-    assert browser.devices["1234"].name == "Device 1"
-    assert browser.devices["1234"].url == "http://1.2.3.4:8181"
-    assert browser.devices["1234"].encrypt is False
-    assert browser.devices["1234"].status is True
+    dev = browser.devices["1234"]
+    assert dev.name == "Device 1"
+    assert dev.url == "http://1.2.3.4:8181"
+    assert dev.encrypt is False
+    assert isinstance(dev, Plug)
+    assert dev.status is True
 
     assert "5678" in browser.devices
-    assert browser.devices["5678"].name == "Device 2"
-    assert browser.devices["5678"].url == "http://1.2.3.4:8181"
-    assert browser.devices["5678"].encrypt is True
-    assert browser.devices["5678"].status is True
-    assert browser.devices["5678"].voltage == 220.00
-    assert browser.devices["5678"].current == 5.00
-    assert browser.devices["5678"].power == 1100.00
+    dev = browser.devices["5678"]
+    assert dev.name == "Device 2"
+    assert dev.url == "http://1.2.3.4:8181"
+    assert dev.encrypt is True
+    assert isinstance(dev, PowerPlug)
+    assert dev.status is True
+    assert dev.voltage == 220.00
+    assert dev.current == 5.00
+    assert dev.power == 1100.00
