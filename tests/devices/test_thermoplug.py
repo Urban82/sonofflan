@@ -15,8 +15,8 @@ def test_create():
             "data": {
                 "switch": "on",
                 "sensorType": "Sensor Type",
-                "currentTemperature": 20.00,
-                "currentHumidity": 55,
+                "currentTemperature": "20.00",
+                "currentHumidity": "55",
             },
         },
         DeviceConfig(
@@ -54,8 +54,8 @@ def test_update():
             "data": {
                 "switch": "on",
                 "sensorType": "Sensor Type",
-                "currentTemperature": 20.00,
-                "currentHumidity": 55,
+                "currentTemperature": "20.00",
+                "currentHumidity": "55",
             },
         },
         DeviceConfig(
@@ -84,8 +84,8 @@ def test_update():
         "data": {
             "switch": "off",
             "sensorType": "Sensor Type",
-            "currentTemperature": 21.57,
-            "currentHumidity": 63,
+            "currentTemperature": "21.57",
+            "currentHumidity": "63",
         },
     })
     after_update = get_and_wait()

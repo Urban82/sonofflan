@@ -42,7 +42,7 @@ class ThermoPlug(Plug):
         super()._update(data)
         self._sensor = data['data']['sensorType']
         self._temperature = float(data['data']['currentTemperature'])
-        self._humidity = float(data['data']['currentHumidity'])
+        self._humidity = int(data['data']['currentHumidity'])
 
     def _repr(self) -> str:
         """Internal representation method"""
@@ -60,6 +60,6 @@ class ThermoPlug(Plug):
         return self._temperature
 
     @property
-    def humidity(self) -> float | None:
+    def humidity(self) -> int | None:
         """The measured humidity"""
         return self._humidity
