@@ -13,8 +13,8 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      # If you wanted to use multiple Python versions, you'd have specify a matrix in the job and
-      # reference the matrixe python version here.
+      # If you wanted to use multiple Python versions, you'd have specified a matrix in the job and
+      # reference the matrix python version here.
       - uses: actions/setup-python@v4
         with:
           python-version: '3.10'

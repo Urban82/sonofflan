@@ -30,16 +30,17 @@ def test_create():
 
     assert dev.id == "1234"
     assert dev.name == "Device 1"
-    assert dev.encrypt == False
+    assert dev.encrypt is False
     assert dev.key is None
     assert dev.url == "http://address:123"
     assert before < after
     assert dev.last_update > before  # type: ignore
     assert dev.last_update < after  # type: ignore
-    assert dev.status == True
+    assert dev.status is True
     assert dev.sensor == "Sensor Type"
     assert dev.temperature == 20.00
     assert dev.humidity == 55
+
 
 def test_update():
     before = get_and_wait()
@@ -69,7 +70,7 @@ def test_update():
     assert before < after
     assert dev.last_update > before  # type: ignore
     assert dev.last_update < after  # type: ignore
-    assert dev.status == True
+    assert dev.status is True
     assert dev.sensor == "Sensor Type"
     assert dev.temperature == 20.00
     assert dev.humidity == 55
@@ -92,7 +93,7 @@ def test_update():
     assert after < after_update
     assert dev.last_update > after  # type: ignore
     assert dev.last_update < after_update  # type: ignore
-    assert dev.status == False
+    assert dev.status is False
     assert dev.sensor == "Sensor Type"
     assert dev.temperature == 21.57
     assert dev.humidity == 63

@@ -32,12 +32,13 @@ def test_create():
 
     assert dev.id == "1234"
     assert dev.name == "Device 1"
-    assert dev.encrypt == False
+    assert dev.encrypt is False
     assert dev.key is None
     assert dev.url == "http://address:123"
     assert before < after
     assert dev.last_update > before  # type: ignore
     assert dev.last_update < after  # type: ignore
+
 
 def test_update():
     before = get_and_wait()
@@ -77,6 +78,7 @@ def test_update():
     assert dev.last_update > after  # type: ignore
     assert dev.last_update < after_update  # type: ignore
 
+
 @pytest.mark.asyncio
 async def test_send():
     dev = Device(
@@ -97,7 +99,7 @@ async def test_send():
     )
 
     with requests_mock.Mocker() as m:
-        m.post(requests_mock.ANY, json={"error":0})
+        m.post(requests_mock.ANY, json={"error": 0})
         dev._send("/command/path", {"parameter": "value"})
 
         await asyncio.sleep(1)
@@ -112,8 +114,9 @@ async def test_send():
     data = json.loads(m.last_request.text)
     assert "sequence" in data
     assert data["deviceid"] == "1234"
-    assert data["encrypt"] == False
+    assert data["encrypt"] is False
     assert json.loads(data["data"]) == {"parameter": "value"}
+
 
 @pytest.mark.asyncio
 async def test_send_crypto():
@@ -139,7 +142,7 @@ async def test_send_crypto():
     )
 
     with requests_mock.Mocker() as m:
-        m.post(requests_mock.ANY, json={"error":0})
+        m.post(requests_mock.ANY, json={"error": 0})
         dev._send("/command/path", {"parameter": "value"})
 
         await asyncio.sleep(1)
@@ -154,7 +157,7 @@ async def test_send_crypto():
     data = json.loads(m.last_request.text)
     assert "sequence" in data
     assert data["deviceid"] == "1234"
-    assert data["encrypt"] == True
+    assert data["encrypt"] is True
     assert data["selfApikey"] == "123"
     assert "iv" in data
     iv = data["iv"]

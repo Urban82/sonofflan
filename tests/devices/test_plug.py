@@ -33,13 +33,14 @@ def test_create():
 
     assert dev.id == "1234"
     assert dev.name == "Device 1"
-    assert dev.encrypt == False
+    assert dev.encrypt is False
     assert dev.key is None
     assert dev.url == "http://address:123"
     assert before < after
     assert dev.last_update > before  # type: ignore
     assert dev.last_update < after  # type: ignore
-    assert dev.status == True
+    assert dev.status is True
+
 
 def test_update():
     before = get_and_wait()
@@ -66,7 +67,7 @@ def test_update():
     assert before < after
     assert dev.last_update > before  # type: ignore
     assert dev.last_update < after  # type: ignore
-    assert dev.status == True
+    assert dev.status is True
 
     dev.update({
         "id": "1234",
@@ -83,7 +84,8 @@ def test_update():
     assert after < after_update
     assert dev.last_update > after  # type: ignore
     assert dev.last_update < after_update  # type: ignore
-    assert dev.status == False
+    assert dev.status is False
+
 
 @pytest.mark.asyncio
 async def test_on():
@@ -107,7 +109,7 @@ async def test_on():
     )
 
     with requests_mock.Mocker() as m:
-        m.post(requests_mock.ANY, json={"error":0})
+        m.post(requests_mock.ANY, json={"error": 0})
         dev.on()
 
         await asyncio.sleep(1)
@@ -122,8 +124,9 @@ async def test_on():
     data = json.loads(m.last_request.text)
     assert "sequence" in data
     assert data["deviceid"] == "1234"
-    assert data["encrypt"] == False
+    assert data["encrypt"] is False
     assert json.loads(data["data"]) == {"switch": "on"}
+
 
 @pytest.mark.asyncio
 async def test_off():
@@ -147,7 +150,7 @@ async def test_off():
     )
 
     with requests_mock.Mocker() as m:
-        m.post(requests_mock.ANY, json={"error":0})
+        m.post(requests_mock.ANY, json={"error": 0})
         dev.off()
 
         await asyncio.sleep(1)
@@ -162,8 +165,9 @@ async def test_off():
     data = json.loads(m.last_request.text)
     assert "sequence" in data
     assert data["deviceid"] == "1234"
-    assert data["encrypt"] == False
+    assert data["encrypt"] is False
     assert json.loads(data["data"]) == {"switch": "off"}
+
 
 @pytest.mark.asyncio
 async def test_toggle():
@@ -187,7 +191,7 @@ async def test_toggle():
     )
 
     with requests_mock.Mocker() as m:
-        m.post(requests_mock.ANY, json={"error":0})
+        m.post(requests_mock.ANY, json={"error": 0})
         dev.toggle()
 
         await asyncio.sleep(1)
@@ -202,7 +206,7 @@ async def test_toggle():
     data = json.loads(m.last_request.text)
     assert "sequence" in data
     assert data["deviceid"] == "1234"
-    assert data["encrypt"] == False
+    assert data["encrypt"] is False
     assert json.loads(data["data"]) == {"switch": "off"}
 
     m.reset()
@@ -219,7 +223,7 @@ async def test_toggle():
     })
 
     with requests_mock.Mocker() as m:
-        m.post(requests_mock.ANY, json={"error":0})
+        m.post(requests_mock.ANY, json={"error": 0})
         dev.toggle()
 
         await asyncio.sleep(1)
@@ -234,8 +238,9 @@ async def test_toggle():
     data = json.loads(m.last_request.text)
     assert "sequence" in data
     assert data["deviceid"] == "1234"
-    assert data["encrypt"] == False
+    assert data["encrypt"] is False
     assert json.loads(data["data"]) == {"switch": "on"}
+
 
 @pytest.mark.asyncio
 async def test_refresh():
@@ -259,7 +264,7 @@ async def test_refresh():
     )
 
     with requests_mock.Mocker() as m:
-        m.post(requests_mock.ANY, json={"error":0})
+        m.post(requests_mock.ANY, json={"error": 0})
         dev.refresh()
 
         await asyncio.sleep(1)
@@ -274,7 +279,7 @@ async def test_refresh():
     data = json.loads(m.last_request.text)
     assert "sequence" in data
     assert data["deviceid"] == "1234"
-    assert data["encrypt"] == False
+    assert data["encrypt"] is False
     assert json.loads(data["data"]) == {"switch": "on"}
 
     m.reset()
@@ -291,7 +296,7 @@ async def test_refresh():
     })
 
     with requests_mock.Mocker() as m:
-        m.post(requests_mock.ANY, json={"error":0})
+        m.post(requests_mock.ANY, json={"error": 0})
         dev.refresh()
 
         await asyncio.sleep(1)
@@ -306,5 +311,5 @@ async def test_refresh():
     data = json.loads(m.last_request.text)
     assert "sequence" in data
     assert data["deviceid"] == "1234"
-    assert data["encrypt"] == False
+    assert data["encrypt"] is False
     assert json.loads(data["data"]) == {"switch": "off"}
