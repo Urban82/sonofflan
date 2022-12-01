@@ -2,7 +2,6 @@ import argparse
 import asyncio
 import json
 import logging
-import sys
 
 from sonofflan.browser import Browser
 from sonofflan.config import DevicesConfig
@@ -75,22 +74,49 @@ async def main() -> None:
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(
-        prog="sonofflan",
-        description="Simple utility to interact with Sonoff devices through LAN protocol"
-    )
-    parser.add_argument("action", choices=["discover", "info"], default="discover", nargs='?')
-    logparser = parser.add_mutually_exclusive_group(required=False)
+    # Common options parsers
+    common_parser = argparse.ArgumentParser()
+    logparser = common_parser.add_mutually_exclusive_group(required=False)
     logparser.add_argument("-v", "--verbose", help="Verbose", action="store_true", default=False)
     logparser.add_argument("-q", "--quiet", help="Quiet", action="store_true", default=False)
-    parser.add_argument("-d", "--device", help="Device ID")
-    parser.add_argument("-k", "--key", help="Device encryption key")
-    parser.add_argument("-c", "--config", help="Device configuration", type=argparse.FileType("r"))
+    common_parser.add_argument("-k", "--key", help="Device encryption key")
+    common_parser.add_argument("-c", "--config", help="Device configuration", type=argparse.FileType("r"))
+
+    common_device_not_required_parser = argparse.ArgumentParser(add_help=False)
+    common_device_not_required_parser.add_argument("-d", "--device", help="Device ID")
+
+    common_device_required_parser = argparse.ArgumentParser(add_help=False)
+    common_device_required_parser.add_argument("-d", "--device", help="Device ID", required=True)
+
+    # Main parser
+    parser = argparse.ArgumentParser(
+        prog="sonofflan",
+        description="Simple utility to interact with Sonoff devices through LAN protocol",
+        parents=[common_parser],
+        add_help=False,
+    )
+
+    # Create sub-parser for commands
+    subparser = parser.add_subparsers(title="Actions", dest="action", metavar="ACTION")
+    subparser.default = "discover"
+
+    # Discover command parser
+    parser_discover = subparser.add_parser(
+        "discover",
+        help="Discover devices",
+        parents=[common_parser, common_device_not_required_parser],
+        add_help=False
+    )
+
+    # Info command parser
+    parser_info = subparser.add_parser(
+        "info",
+        help="Get info from the given device",
+        parents=[common_parser, common_device_required_parser],
+        add_help=False
+    )
+
     args = parser.parse_args()
-    if args.action == "info":
-        if args.device is None:
-            logger.error("Device ID is missing")
-            sys.exit(1)
 
     if args.config is not None:
         config = DevicesConfig(json.load(args.config))
