@@ -18,18 +18,7 @@ root_logger.addHandler(stream_handler)
 logger = logging.getLogger("sonofflan")
 
 
-def discover(devices: dict[str, Device]) -> None:
-    print(f"Found {len(devices)} devices:")
-    for device_id in devices:
-        device = devices[device_id]
-        print(f" - {device.name} [{device.id}] {type(device).__name__}")
-
-
-def info(devices: dict[str, Device], device_id: str) -> None:
-    if device_id not in devices:
-        logger.error(f"Device with ID {device_id} not found")
-        return
-    device = devices[device_id]
+def print_device(device: Device) -> None:
     print(f"{device.name} [{device.id}]")
     print(f"  Url:         {device.url}")
     print(f"  Type:        {type(device).__name__}")
@@ -50,6 +39,41 @@ def info(devices: dict[str, Device], device_id: str) -> None:
         print(f"  Sensor:      {device.sensor}")
 
 
+def discover(devices: dict[str, Device]) -> None:
+    print(f"Found {len(devices)} devices:")
+    for device_id in devices:
+        device = devices[device_id]
+        print(f" - {device.name} [{device.id}] {type(device).__name__}")
+
+
+def info(devices: dict[str, Device], device_id: str) -> None:
+    if device_id not in devices:
+        logger.error(f"Device with ID {device_id} not found")
+        return
+    print_device(devices[device_id])
+
+
+async def command(devices: dict[str, Device], device_id: str, cmd: str) -> None:
+    if device_id not in devices:
+        logger.error(f"Device with ID {device_id} not found")
+        return
+    device = devices[device_id]
+    print_device(device)
+    # noinspection PyBroadException
+    try:
+        m = getattr(device, cmd)
+        if isinstance(device, Plug):
+            m()
+        elif isinstance(device, Strip):
+            m(args.outlet)
+        else:
+            raise Exception()
+        await asyncio.sleep(5)  # Wait for update to propagate
+        print_device(device)
+    except Exception:
+        logger.error(f"Unsupported device of type \"{type(device).__name__}\"")
+
+
 async def main() -> None:
     browser = None
     # noinspection PyBroadException
@@ -64,6 +88,8 @@ async def main() -> None:
             discover(browser.devices)
         elif args.action == "info":
             info(browser.devices, args.device)
+        else:
+            await command(browser.devices, args.device, args.action)
     except Exception:
         logger.error("Exception", exc_info=True)
     finally:
@@ -88,6 +114,9 @@ if __name__ == "__main__":
     common_device_required_parser = argparse.ArgumentParser(add_help=False)
     common_device_required_parser.add_argument("-d", "--device", help="Device ID", required=True)
 
+    common_outlet_parser = argparse.ArgumentParser(add_help=False)
+    common_outlet_parser.add_argument("-o", "--outlet", help="Outlet ID (for Strip devices)", type=int, default=0)
+
     # Main parser
     parser = argparse.ArgumentParser(
         prog="sonofflan",
@@ -105,7 +134,7 @@ if __name__ == "__main__":
         "discover",
         help="Discover devices",
         parents=[common_parser, common_device_not_required_parser],
-        add_help=False
+        add_help=False,
     )
 
     # Info command parser
@@ -113,7 +142,31 @@ if __name__ == "__main__":
         "info",
         help="Get info from the given device",
         parents=[common_parser, common_device_required_parser],
-        add_help=False
+        add_help=False,
+    )
+
+    # On command parser
+    parser_on = subparser.add_parser(
+        "on",
+        help="Turn on the device",
+        parents=[common_parser, common_device_required_parser, common_outlet_parser],
+        add_help=False,
+    )
+
+    # Off command parser
+    parser_off = subparser.add_parser(
+        "off",
+        help="Turn off the device",
+        parents=[common_parser, common_device_required_parser, common_outlet_parser],
+        add_help=False,
+    )
+
+    # Toggle command parser
+    parser_toggle = subparser.add_parser(
+        "toggle",
+        help="Toggle the status of the device",
+        parents=[common_parser, common_device_required_parser, common_outlet_parser],
+        add_help=False,
     )
 
     args = parser.parse_args()
