@@ -12,7 +12,7 @@ Version: 0.1.0
 ## Install
 
 ### Requirements
-* Python 3.7+
+* Python 3.9+
 
 ## Usage
 
