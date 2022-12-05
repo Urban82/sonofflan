@@ -30,4 +30,4 @@ PRs accepted.
 
 ## License
 
-MIT (c) Danilo Treffiletti
+BSD-3 (c) Danilo Treffiletti
