@@ -7,7 +7,7 @@ Author: Danilo Treffiletti <urban82@gmail.com>
 
 License: BSD-3
 
-Version: 0.1.0
+Version: 0.1.1
 
 ## Install
 
