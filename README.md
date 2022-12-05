@@ -15,6 +15,14 @@ Version: 0.1.0
 * Python 3.9+
 
 ## Usage
+Install with
+```pip install sonofflan```
+
+Basic utility
+```python -m sonofflan```
+
+In your code:
+TODO (check __main__.py and tests)
 
 ## Contributing
 
