@@ -1,6 +1,7 @@
 import asyncio
 import json
 import logging
+from copy import deepcopy
 
 from zeroconf import ServiceStateChange, Zeroconf
 from zeroconf.asyncio import AsyncServiceBrowser, AsyncZeroconf
@@ -18,6 +19,30 @@ from sonofflan.utils import parse_address
 
 SERVICE_TYPE = "_ewelink._tcp.local."
 DEVICE_PREFIX = "eWeLink_"
+
+
+class Event:
+    """Event detected by Zeroconf browser
+
+    Attributes
+    ----------
+    `action` : ServiceStateChange
+        The action on the device
+    `device` : Device
+        The device for the event
+    """
+
+    def __init__(self, action: ServiceStateChange, device: Device):
+        self._action = action
+        self._device = deepcopy(device)
+
+    @property
+    def action(self) -> ServiceStateChange:
+        return self._action
+
+    @property
+    def device(self) -> Device:
+        return self._device
 
 
 class Browser:
@@ -39,6 +64,7 @@ class Browser:
 
         self._config = config
         self._devices = {}
+        self._queue = asyncio.Queue()
         self._logger = logging.getLogger(f"sonofflan.browser")
 
         self._logger.debug("Starting...")
@@ -51,6 +77,18 @@ class Browser:
         self._logger.debug("Stopping...")
         await self._browser.async_cancel()
         self._logger.debug("Stopped")
+
+    async def wait_event(self) -> Event:
+        """Get one event from the queue"""
+        return await self._queue.get()
+
+    def event_processed(self) -> None:
+        """Mark the event as processed"""
+        self._queue.task_done()
+
+    async def _enqueue_event(self, action: ServiceStateChange, device: Device) -> None:
+        self._logger.debug(f"New event {action.name} for {device}")
+        await self._queue.put(Event(action, device))
 
     @property
     def devices(self) -> dict[str, Device]:
@@ -103,6 +141,7 @@ class Browser:
             else:
                 # TODO Maybe set as offline?
                 pass
+            await self._enqueue_event(state_change, device)
             self._logger.info(f"{state_change.name} {device}")
         except InvalidDeviceError as ex:
             self._logger.warning(f'{ex}, ignoring it')

@@ -166,3 +166,67 @@ async def test_add_two(class_mocker):
     assert dev.voltage == 220.00
     assert dev.current == 5.00
     assert dev.power == 1100.00
+
+
+@pytest.mark.asyncio
+async def test_queue(class_mocker):
+    class_mocker.patch('sonofflan.browser.AsyncZeroconf', new=AsyncZeroconfMock)
+    class_mocker.patch('sonofflan.browser.AsyncServiceBrowser', new=AsyncServiceBrowserMock)
+
+    browser = Browser(config)
+
+    events = []
+
+    # Create a task that collect events
+    async def processor(ev_list: list):
+        while True:
+            ev = await browser.wait_event()
+            logger.info(f"Got event {ev.action} for {ev.device}")
+            ev_list += [ev]
+            browser.event_processed()
+    task = asyncio.create_task(processor(events))
+
+    # noinspection PyTypeChecker
+    browser._update(
+        zeroconf=None,
+        service_type="_ewelink._tcp.local.",
+        name="eWeLink_1234._ewelink._tcp.local.",
+        state_change=ServiceStateChange.Added
+    )
+    # noinspection PyTypeChecker
+    browser._update(
+        zeroconf=None,
+        service_type="_ewelink._tcp.local.",
+        name="eWeLink_5678._ewelink._tcp.local.",
+        state_change=ServiceStateChange.Added
+    )
+    # noinspection PyTypeChecker
+    browser._update(
+        zeroconf=None,
+        service_type="_ewelink._tcp.local.",
+        name="eWeLink_1234._ewelink._tcp.local.",
+        state_change=ServiceStateChange.Updated
+    )
+
+    # Wait for all events processed
+    await asyncio.sleep(1)
+    await browser._queue.join()
+    task.cancel()
+    await browser.shutdown()
+
+    logger.info("Events:")
+    for ev in events:
+        logger.info(f"  {ev.action.name} for {ev.device}")
+    assert len(events) == 3
+    event = events.pop(0)
+    assert event.action == ServiceStateChange.Added
+    assert event.device.id == "1234"
+    assert event.device is not browser.devices["1234"]  # Check that it was copied
+    event = events.pop(0)
+    assert event.action == ServiceStateChange.Added
+    assert event.device.id == "5678"
+    assert event.device is not browser.devices["5678"]  # Check that it was copied
+    event = events.pop(0)
+    assert event.action == ServiceStateChange.Updated
+    assert event.device.id == "1234"
+    assert event.device is not browser.devices["1234"]  # Check that it was copied
