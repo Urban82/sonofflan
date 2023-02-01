@@ -1,5 +1,6 @@
 from sonofflan.config import DeviceConfig
 from sonofflan.devices.device import Device
+from sonofflan.errors import MissingSwitchesError
 
 
 class Plug(Device):
@@ -34,7 +35,18 @@ class Plug(Device):
         """
 
         super()._update(data)
-        self._status = (data['data']['switch'] == 'on')
+        if "switch" in data['data']:
+            self._status = (data['data']['switch'] == 'on')
+        elif "switches" in data['data']:
+            if len(data['data']['switches']) == 0:
+                raise MissingSwitchesError(self.id, data["type"])
+            if len(data['data']['switches']) > 1:
+                self._logger.warning(
+                    f'Too much switches in device "{self.id}" ({data["type"]}): using only the first one'
+                )
+            self._status = (data['data']['switches'][0]['switch'] == 'on')
+        else:
+            raise MissingSwitchesError(self.id, data["type"])
 
     def _repr(self) -> str:
         """Internal representation method"""

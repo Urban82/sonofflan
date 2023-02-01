@@ -2,6 +2,19 @@ from sonofflan.config import DeviceConfig
 from sonofflan.devices.plug import Plug
 
 
+def _parse_data(value: str | int | float) -> float:
+    """Parse data from update"""
+
+    if isinstance(value, str):
+        return float(value)
+    if isinstance(value, float):
+        return value
+    if isinstance(value, int):
+        return value / 100.0
+
+    return 0
+
+
 class PowerPlug(Plug):
     """Sonoff plug with power meter
 
@@ -40,9 +53,9 @@ class PowerPlug(Plug):
         """
 
         super()._update(data)
-        self._voltage = float(data['data']['voltage'])
-        self._current = float(data['data']['current'])
-        self._power = float(data['data']['power'])
+        self._voltage = _parse_data(data['data']['voltage'])
+        self._current = _parse_data(data['data']['current'])
+        self._power = _parse_data(data['data']['power'])
 
     def _repr(self) -> str:
         """Internal representation method"""

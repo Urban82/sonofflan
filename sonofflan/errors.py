@@ -30,3 +30,12 @@ class MissingDeviceKeyError(RuntimeError):
         super().__init__(f'Missing device key for encrypted device "{device_id}" ({type_})')
         self.id = device_id
         self.type_ = type_
+
+
+class MissingSwitchesError(RuntimeError):
+    """The device doesn't have switches"""
+
+    def __init__(self, device_id: str, type_: str) -> None:
+        super().__init__(f'Missing switches for device "{device_id}" ({type_})')
+        self.id = device_id
+        self.type_ = type_

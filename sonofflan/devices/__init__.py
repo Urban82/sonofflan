@@ -17,6 +17,10 @@ def create_device(data: dict, config: DeviceConfig) -> Device:
         Configuration for the device
     """
 
+    # Checking if a "plug" is the new PowerPlug
+    if data['type'] == "plug" and 'power' in data['data'] and 'voltage' in data['data'] and 'current' in data['data']:
+        data['type'] = "enhanced_plug"
+
     if data['type'] == "plug":
         return Plug(data, config)
     if data['type'] == "strip":

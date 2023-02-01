@@ -42,6 +42,84 @@ def test_create():
     assert dev.power == 1100.00
 
 
+def test_create_str():
+    before = get_and_wait()
+    dev = PowerPlug(
+        {
+            "id": "1234",
+            "type": "enhanced_plug",
+            "address": "address",
+            "port": 123,
+            "encrypt": False,
+            "data": {
+                "switch": "on",
+                "voltage": '220.00',
+                "current": '5.00',
+                "power": '1100.00',
+            },
+        },
+        DeviceConfig(
+            {
+                "id": "1234",
+                "name": "Device 1",
+            }
+        )
+    )
+    after = get_and_wait()
+
+    assert dev.id == "1234"
+    assert dev.name == "Device 1"
+    assert dev.encrypt is False
+    assert dev.key is None
+    assert dev.url == "http://address:123"
+    assert before < after
+    assert dev.last_update > before  # type: ignore
+    assert dev.last_update < after  # type: ignore
+    assert dev.status is True
+    assert dev.voltage == 220.00
+    assert dev.current == 5.00
+    assert dev.power == 1100.00
+
+
+def test_create_int():
+    before = get_and_wait()
+    dev = PowerPlug(
+        {
+            "id": "1234",
+            "type": "enhanced_plug",
+            "address": "address",
+            "port": 123,
+            "encrypt": False,
+            "data": {
+                "switch": "on",
+                "voltage": 22000,
+                "current": 500,
+                "power": 110000,
+            },
+        },
+        DeviceConfig(
+            {
+                "id": "1234",
+                "name": "Device 1",
+            }
+        )
+    )
+    after = get_and_wait()
+
+    assert dev.id == "1234"
+    assert dev.name == "Device 1"
+    assert dev.encrypt is False
+    assert dev.key is None
+    assert dev.url == "http://address:123"
+    assert before < after
+    assert dev.last_update > before  # type: ignore
+    assert dev.last_update < after  # type: ignore
+    assert dev.status is True
+    assert dev.voltage == 220.00
+    assert dev.current == 5.00
+    assert dev.power == 1100.00
+
+
 def test_update():
     before = get_and_wait()
     dev = PowerPlug(
