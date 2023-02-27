@@ -1,13 +1,13 @@
 # Sonoff LAN
 
 Library to interact with Sonoff devices through LAN mode (without eWeLink cloud) with firmware
-version 3+ (tested up to version 3.5.1).
+version 3+ (tested up to version 3.7.0).
 
 Author: Danilo Treffiletti <urban82@gmail.com>
 
 License: BSD-3
 
-Version: 0.2.0
+Version: 0.2.1
 
 ## Install
 
@@ -25,9 +25,7 @@ In your code:
 TODO (check __main__.py and tests)
 
 ## Contributing
-
 PRs accepted.
 
 ## License
-
 BSD-3 (c) Danilo Treffiletti
