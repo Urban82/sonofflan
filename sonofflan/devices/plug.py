@@ -23,6 +23,7 @@ class Plug(Device):
         """
 
         self._status = None
+        self._outlet = None
         super().__init__(data, config)
 
     def _update(self, data: dict) -> None:
@@ -44,6 +45,7 @@ class Plug(Device):
                 self._logger.warning(
                     f'Too much switches in device "{self.id}" ({data["type"]}): using only the first one'
                 )
+            self._outlet = data['data']['switches'][0]['outlet']
             self._status = (data['data']['switches'][0]['switch'] == 'on')
         else:
             raise MissingSwitchesError(self.id, data["type"])
@@ -63,13 +65,19 @@ class Plug(Device):
         """Turn on the plug"""
 
         self._logger.debug(f"Turn ON {self}")
-        self._send("/zeroconf/switch", {"switch": "on"})
+        if self._outlet is None:
+            self._send("/zeroconf/switch", {"switch": "on"})
+        else:
+            self._send("/zeroconf/switches", {"switches": [{"switch": "on", "outlet": self._outlet}], "operSide": 1 })
 
     def off(self) -> None:
         """Turn off the plug"""
 
         self._logger.debug(f"Turn OFF {self}")
-        self._send("/zeroconf/switch", {"switch": "off"})
+        if self._outlet is None:
+            self._send("/zeroconf/switch", {"switch": "off"})
+        else:
+            self._send("/zeroconf/switches", {"switches": [{"switch": "off", "outlet": self._outlet}], "operSide": 1})
 
     def toggle(self) -> None:
         """Toggle the device status"""
