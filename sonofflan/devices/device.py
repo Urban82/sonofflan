@@ -61,7 +61,7 @@ class Device:
 
         self._encrypt = data['encrypt']
         self._url = f"http://{data['address']}:{data['port']}"
-        self._last_update = datetime.now()
+        self._last_update = datetime.utcnow()
 
     def update(self, data: dict) -> None:
         """Update the device with data from Zeroconf
