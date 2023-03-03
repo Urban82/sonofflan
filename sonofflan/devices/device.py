@@ -145,7 +145,12 @@ class Device:
             }
         )
         payload = json.dumps(payload, separators=(",", ":"), indent=None)
-        response = requests.post(f"{self._url}{url}", headers=headers, data=payload)
+        # noinspection PyBroadException
+        try:
+            response = requests.post(f"{self._url}{url}", headers=headers, data=payload)
+        except Exception:
+            self._logger.error(f"Cannot send request to {self._url}{url}", exc_info=True)
+            return
         # noinspection PyBroadException
         try:
             if response.status_code != 200:
