@@ -76,6 +76,7 @@ class Browser:
 
         self._logger.debug("Stopping...")
         await self._browser.async_cancel()
+        await self._queue.put(None)
         self._logger.debug("Stopped")
 
     async def wait_event(self) -> Event:
