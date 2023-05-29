@@ -10,7 +10,7 @@ def _parse_data(value: str | int | float) -> float:
     if isinstance(value, float):
         return value
     if isinstance(value, int):
-        return value / 100.0
+        return float(value)
 
     return 0
 
@@ -56,6 +56,10 @@ class PowerPlug(Plug):
         self._voltage = _parse_data(data['data']['voltage'])
         self._current = _parse_data(data['data']['current'])
         self._power = _parse_data(data['data']['power'])
+        if "switches" in data['data']:  # New Power R3
+            self._voltage /= 100.0
+            self._current /= 100.0
+            self._power /= 100.0
 
     def _repr(self) -> str:
         """Internal representation method"""
