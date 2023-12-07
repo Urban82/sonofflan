@@ -13,6 +13,7 @@ def test_create():
             "port": 123,
             "encrypt": False,
             "data": {
+                "deviceType": "normal",
                 "switch": "on",
                 "sensorType": "Sensor Type",
                 "currentTemperature": "20.00",
@@ -52,6 +53,7 @@ def test_update():
             "port": 123,
             "encrypt": False,
             "data": {
+                "deviceType": "normal",
                 "switch": "on",
                 "sensorType": "Sensor Type",
                 "currentTemperature": "20.00",
@@ -82,6 +84,7 @@ def test_update():
         "port": 123,
         "encrypt": False,
         "data": {
+            "deviceType": "normal",
             "switch": "off",
             "sensorType": "Sensor Type",
             "currentTemperature": "21.57",
