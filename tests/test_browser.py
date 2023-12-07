@@ -31,6 +31,7 @@ logger = logging.getLogger("test_browser")
 class AsyncZeroconfMock(AsyncMock):
     def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
+        self.zeroconf = None
 
     # noinspection PyMethodMayBeStatic
     async def async_get_service_info(self, service_type: str, name: str) -> ServiceInfo:
