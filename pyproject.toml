@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "sonofflan"
-version = "0.3.3"
+version = "0.4.0"
 description = "Library to interact with Sonoff devices through LAN mode (without eWeLink cloud)"
 authors = ["Danilo Treffiletti <urban82@gmail.com>"]
 license = "BSD-3-Clause"
